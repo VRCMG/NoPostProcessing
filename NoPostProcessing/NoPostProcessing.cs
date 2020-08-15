@@ -1,4 +1,5 @@
-﻿using MelonLoader;
+using System.Collections;
+using MelonLoader;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
@@ -10,8 +11,6 @@ namespace NoPostProcessing
             public static bool DisablePostProcessing = true;
 
             public static bool WorldWasChanged = false;
-
-            public static float Delay = 0f;
         #endregion
 
         public override void OnApplicationStart()
@@ -50,10 +49,25 @@ namespace NoPostProcessing
             }
         }
 
-        public override void OnUpdate()
+        public override void OnLevelWasInitialized(int level)
         {
+            //If World Was Initialized (Not Login/Loading)
+            if (level == -1)
+            {
+                //Define Boolean Stating The World Was Changed
+                WorldWasChanged = true;
+
+                //Define Delay Offset To Use In OnUpdate()
+                DelayedAction();
+            }
+        }
+
+        IEnumerator DelayedAction()
+        {
+            yield return new WaitForSeconds(5);
+
             //Do Not Run Any Code Below Unless The Delay Has Passed & The World Has Changed
-            if (WorldWasChanged && Delay < Time.time)
+            if (WorldWasChanged)
             {
                 //Define WorldWasChanged As False Until Next World Change
                 WorldWasChanged = false;
@@ -75,19 +89,6 @@ namespace NoPostProcessing
                         }
                     }
                 }
-            }
-        }
-
-        public override void OnLevelWasInitialized(int level)
-        {
-            //If World Was Initialized (Not Login/Loading)
-            if (level == -1)
-            {
-                //Define Boolean Stating The World Was Changed
-                WorldWasChanged = true;
-
-                //Define Delay Offset To Use In OnUpdate()
-                Delay = Time.time + 5f;
             }
         }
     }
