@@ -58,7 +58,7 @@ namespace NoPostProcessing
                 WorldWasChanged = true;
 
                 //Define Delay Offset To Use In OnUpdate()
-                DelayedAction();
+                MelonCoroutines.Start(DelayedAction());
             }
         }
 
